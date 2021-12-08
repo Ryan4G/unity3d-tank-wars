@@ -18,6 +18,12 @@ public class TankMain : MonoBehaviour
         baseTank.Init("tankPrefab");
 
         tankObj.AddComponent<CameraFollow>();
+
+
+        GameObject enemyObj = new GameObject("enmemyTank");
+        enemyObj.transform.position = new Vector3(10, 0, 50f);
+        BaseTank enemyTank = enemyObj.AddComponent<SyncTank>();
+        enemyTank.Init("tankPrefab");
     }
 
     private void OnMsgMove(MsgBase msgBase)

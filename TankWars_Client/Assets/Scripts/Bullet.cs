@@ -47,10 +47,21 @@ public class Bullet : MonoBehaviour
         {
             return;
         }
+        
+        if (hitTank)
+        {
+            var distance = Vector3.Distance(transform.position, hitTank.transform.position);
+            var damage = 35f * Mathf.Clamp(50f / distance, 1f, 3f);
 
-        //GameObject explore = ResManager.LoadPrefab("fire");
-        //Instantiate(explore, transform.position, transform.rotation);
+            hitTank.Attacked(damage);
+        }
+
+        GameObject exploreEffect = ResManager.LoadPrefab(@"Effects/Fire & Explosion Effects/Prefabs/TinyExplosion");
+        var exploreObj = Instantiate(exploreEffect, transform.position, transform.rotation);
+        DelayToDestory dtd = exploreObj.AddComponent<DelayToDestory>();
+        dtd.Init(2.0f);
 
         Destroy(gameObject);
     }
+
 }

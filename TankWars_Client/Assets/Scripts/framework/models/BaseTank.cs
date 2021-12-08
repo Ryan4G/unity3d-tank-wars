@@ -23,9 +23,9 @@ public class BaseTank : MonoBehaviour
 
     public float lastFireTime = 0;
 
-    protected Rigidbody rigidbody;
+    protected Rigidbody _rigidBody;
 
-    public float hp = 100;
+    public float hp = 100f;
 
     // Start is called before the first frame update
     public void Start()
@@ -46,7 +46,7 @@ public class BaseTank : MonoBehaviour
         skin.transform.localPosition = Vector3.zero;
         skin.transform.localEulerAngles = Vector3.zero;
 
-        rigidbody = gameObject.AddComponent<Rigidbody>();
+        _rigidBody = gameObject.AddComponent<Rigidbody>();
         BoxCollider boxCollider = gameObject.AddComponent<BoxCollider>();
         boxCollider.center = new Vector3(0, 2.5f, 1.46f);
         boxCollider.size = new Vector3(7, 5, 12);
@@ -78,5 +78,29 @@ public class BaseTank : MonoBehaviour
     protected bool IsDie()
     {
         return hp <= 0;
+    }
+
+    public void Attacked(float damage)
+    {
+        if (IsDie())
+        {
+            return;
+        }
+
+        hp -= damage;
+
+        if (IsDie())
+        {
+            GameObject obj = ResManager.LoadPrefab(@"Effects/Fire & Explosion Effects/Prefabs/BigExplosion");
+            Vector3 objPos = new Vector3(0, 6, 1);
+            var exploreObj = Instantiate(obj, transform.position + objPos, transform.rotation, transform);
+            DelayToDestory dtd = exploreObj.AddComponent<DelayToDestory>();
+            dtd.Init(2.0f);
+
+            GameObject obj2 = ResManager.LoadPrefab(@"Effects/Fire & Explosion Effects/Prefabs/WildFire");
+            obj2.transform.localScale = new Vector3(4, 4, 6);
+            Vector3 obj2Pos = new Vector3(0.39f, 3.32f, 1.46f);
+            Instantiate(obj2, transform.position + obj2Pos, transform.rotation, transform);
+        }
     }
 }
