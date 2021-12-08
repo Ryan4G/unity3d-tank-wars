@@ -13,17 +13,20 @@ public class TankMain : MonoBehaviour
         //NetManager.AddEventListener(NetManager.NetEvent.Close, OnConnectClose);
         //NetManager.AddMsgListener("MsgMove", OnMsgMove);
 
-        GameObject tankObj = new GameObject("myTank");
-        BaseTank baseTank = tankObj.AddComponent<CtrlTank>();
-        baseTank.Init("tankPrefab");
+        PanelManager.Init();
+        PanelManager.Open<LoginPanel>();
 
-        tankObj.AddComponent<CameraFollow>();
+        //GameObject tankObj = new GameObject("myTank");
+        //BaseTank baseTank = tankObj.AddComponent<CtrlTank>();
+        //baseTank.Init("tankPrefab");
+
+        //tankObj.AddComponent<CameraFollow>();
 
 
-        GameObject enemyObj = new GameObject("enmemyTank");
-        enemyObj.transform.position = new Vector3(10, 0, 50f);
-        BaseTank enemyTank = enemyObj.AddComponent<SyncTank>();
-        enemyTank.Init("tankPrefab");
+        //GameObject enemyObj = new GameObject("enmemyTank");
+        //enemyObj.transform.position = new Vector3(10, 0, 50f);
+        //BaseTank enemyTank = enemyObj.AddComponent<SyncTank>();
+        //enemyTank.Init("tankPrefab");
     }
 
     private void OnMsgMove(MsgBase msgBase)
