@@ -17,7 +17,7 @@ public class LoginPanel : BasePanel
         layer = PanelManager.Layer.Panel;
     }
 
-    public override void OnShow(params object[] para)
+    public override void OnShow(params object[] args)
     {
         idInput = skin.transform.Find("IdInput").GetComponent<InputField>();
         pwInput = skin.transform.Find("PwInput").GetComponent<InputField>();
@@ -56,7 +56,7 @@ public class LoginPanel : BasePanel
 
     public override void OnClose()
     {
-        base.OnClose();
+        NetManager.RemoveMsgListener("MsgLogin", OnMsgLogin);
     }
 
     private void OnConnectFail(string err)
@@ -82,6 +82,8 @@ public class LoginPanel : BasePanel
             baseTank.Init("tankPrefab");
 
             tankObj.AddComponent<CameraFollow>();
+
+            GameMain.id = msg.id;
 
             Close();
         }

@@ -27,7 +27,7 @@ public class BasePanel : MonoBehaviour
 
     }
 
-    public virtual void OnShow(params object[] para)
+    public virtual void OnShow(params object[] args)
     {
 
     }

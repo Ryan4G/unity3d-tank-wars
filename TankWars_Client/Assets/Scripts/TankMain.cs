@@ -15,6 +15,7 @@ public class TankMain : MonoBehaviour
 
         PanelManager.Init();
         PanelManager.Open<LoginPanel>();
+        PanelManager.Open<TipPanel>("用户名或密码错误！");
 
         //GameObject tankObj = new GameObject("myTank");
         //BaseTank baseTank = tankObj.AddComponent<CtrlTank>();
