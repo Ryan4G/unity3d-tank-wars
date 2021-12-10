@@ -6,7 +6,7 @@ namespace TankWars_Server
     {
         static void Main(string[] args)
         {
-            if (!DBManager.Connect("game", "127.0.0.1", 3306, "root", "123456"))
+            if (!DBManager.Connect("tankwar", "127.0.0.1", 3306, "root", "123456"))
             {
                 return;
             }
