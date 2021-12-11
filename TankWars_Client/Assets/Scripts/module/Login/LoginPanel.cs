@@ -77,11 +77,11 @@ public class LoginPanel : BasePanel
         {
             Debug.Log("登录成功");
 
-            GameObject tankObj = new GameObject("myTank");
-            BaseTank baseTank = tankObj.AddComponent<CtrlTank>();
-            baseTank.Init("tankPrefab");
+            //GameObject tankObj = new GameObject("myTank");
+            //BaseTank baseTank = tankObj.AddComponent<CtrlTank>();
+            //baseTank.Init("tankPrefab");
 
-            tankObj.AddComponent<CameraFollow>();
+            //tankObj.AddComponent<CameraFollow>();
 
             GameMain.id = msg.id;
 

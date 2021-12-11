@@ -11,6 +11,16 @@ public partial class EventHandler
 
         if (c.player != null)
         {
+            // if player disconnect suddently, player will leave room auto.
+            int roomId = c.player.roomId;
+            if (roomId >= 0)
+            {
+                Room room = RoomManager.GetRoom(roomId);
+                if (room != null)
+                {
+                    room.RemovePlayer(c.player.id);
+                }
+            }
             DBManager.UpdatePlayerData(c.player.id, c.player.data);
             PlayerManager.RemovePlayer(c.player.id);
         }

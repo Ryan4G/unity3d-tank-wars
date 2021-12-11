@@ -349,7 +349,7 @@ public static class NetManager
 
             lock (writeQueue)
             {
-                ba = writeQueue.Peek();
+                ba = writeQueue.First();
             }
 
             ba.readIdx += count;
@@ -361,7 +361,7 @@ public static class NetManager
                 {
                     writeQueue.Dequeue();
 
-                    ba = writeQueue.Peek();
+                    ba = writeQueue.First();
                 }
             }
 

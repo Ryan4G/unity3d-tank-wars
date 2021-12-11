@@ -99,7 +99,7 @@ public class RoomListPanel : BasePanel
         Text idText = trans.Find("IdText").GetComponent<Text>();
         Text countText = trans.Find("CountText").GetComponent<Text>();
         Text stateText = trans.Find("StateText").GetComponent<Text>();
-        Button btn = trans.Find("JoinButton").GetComponent<Button>();
+        Button btn = trans.Find("JoinBtn").GetComponent<Button>();
 
         idText.text = roomInfo.id.ToString();
         countText.text = roomInfo.count.ToString();

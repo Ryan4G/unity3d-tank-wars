@@ -6,7 +6,7 @@ public class CameraFollow : MonoBehaviour
 {
     public Vector3 distance = new Vector3(0, 8, -18);
 
-    public Camera camera;
+    public Camera _camera;
 
     public Vector3 offset = new Vector3(0, 5f, 0);
 
@@ -14,12 +14,12 @@ public class CameraFollow : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        camera = Camera.main;
+        _camera = Camera.main;
 
         Vector3 pos = transform.position;
         Vector3 forward = transform.forward;
         Vector3 initPos = pos - 30 * forward + Vector3.up * 10;
-        camera.transform.position = initPos;
+        _camera.transform.position = initPos;
     }
 
     // Update is called once per frame
@@ -38,10 +38,10 @@ public class CameraFollow : MonoBehaviour
         targetPos = pos + forward * distance.z;
         targetPos.y += distance.y;
 
-        Vector3 cameraPos = camera.transform.position;
+        Vector3 cameraPos = _camera.transform.position;
         cameraPos = Vector3.MoveTowards(cameraPos, targetPos, Time.deltaTime * speed);
-        camera.transform.position = cameraPos;
+        _camera.transform.position = cameraPos;
 
-        camera.transform.LookAt(pos + offset);
+        _camera.transform.LookAt(pos + offset);
     }
 }

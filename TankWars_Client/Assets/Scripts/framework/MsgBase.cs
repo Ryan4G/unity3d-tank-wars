@@ -10,6 +10,9 @@ public class MsgBase
     public static byte[] Encode(MsgBase msgBase)
     {
         string s = JsonUtility.ToJson(msgBase);
+
+        Debug.Log(s);
+
         return System.Text.Encoding.UTF8.GetBytes(s);
     }
 
