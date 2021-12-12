@@ -14,6 +14,7 @@ public class GameMain : MonoBehaviour
         NetManager.AddMsgListener("MsgKick", OnMsgKick);
 
         PanelManager.Init();
+        BattleManager.Init();
         PanelManager.Open<LoginPanel>();
     }
 

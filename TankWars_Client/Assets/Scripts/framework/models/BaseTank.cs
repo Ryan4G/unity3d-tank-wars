@@ -27,6 +27,10 @@ public class BaseTank : MonoBehaviour
 
     public float hp = 100f;
 
+    public string id = "";
+
+    public int camp = 0;
+
     // Start is called before the first frame update
     public void Start()
     {
