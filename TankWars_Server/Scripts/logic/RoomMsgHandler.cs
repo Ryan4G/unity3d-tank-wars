@@ -148,5 +148,40 @@ public partial class MsgHandler
     public static void MsgStartBattle(ClientState c, MsgBase msgBase)
     {
         MsgStartBattle msg = msgBase as MsgStartBattle;
+        Player player = c.player;
+
+        if (player == null)
+        {
+            return;
+        }
+
+        Room room = RoomManager.GetRoom(player.roomId);
+
+        if (room == null)
+        {
+            msg.result = 0;
+            player.Send(msg);
+
+            return;
+        }
+
+        if (!room.IsOwner(player))
+        {
+            msg.result = 0;
+            player.Send(msg);
+
+            return;
+        }
+
+        if (!room.StartBattle())
+        {
+            msg.result = 0;
+            player.Send(msg);
+
+            return;
+        }
+
+        msg.result = 1;
+        player.Send(msg);
     }
 }

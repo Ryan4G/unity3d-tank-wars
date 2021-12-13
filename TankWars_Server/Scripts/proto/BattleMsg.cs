@@ -1,25 +1,53 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-
-public class MsgAttack : MsgBase
+[System.Serializable]
+public class TankInfo
 {
-    public MsgAttack()
-    {
-        protoName = nameof(MsgAttack);
-    }
+    public string id = "";
+    public int camp = 0;
+    public int hp = 0;
 
-    public string desc = "127.0.0.1:6543";
+    // position
+    public float x = 0;
+    public float y = 0;
+    public float z = 0;
+
+    // rotation
+    public float ex = 0;
+    public float ey = 0;
+    public float ez = 0;
+
 }
 
-public class MsgMove : MsgBase
+public class MsgEnterBattle : MsgBase
 {
-    public MsgMove()
+    public MsgEnterBattle()
     {
-        protoName = nameof(MsgMove);
+        protoName = nameof(MsgEnterBattle);
     }
 
-    public int x = 0;
-    public int y = 0;
-    public int z = 0;
+    public TankInfo[] tanks;
+    public int mapId = 1;
 }
+
+public class MsgBattleResult : MsgBase
+{
+    public MsgBattleResult()
+    {
+        protoName = nameof(MsgBattleResult);
+    }
+
+    public int winCamp = 0;
+}
+
+public class MsgLeaveBattle : MsgBase
+{
+    public MsgLeaveBattle()
+    {
+        protoName = nameof(MsgLeaveBattle);
+    }
+
+    public string id = "";
+}
+

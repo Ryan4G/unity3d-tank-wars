@@ -126,6 +126,9 @@ public class ByteArray
         }
 
         short ret = (short)((bytes[1] << 8) | bytes[0]);
+
+        Console.WriteLine($"ReadInt16 -> {bytes[0]:X2} {bytes[1]:X2}");
+
         readIdx += 2;
 
         CheckAndMoveBytes();

@@ -6,14 +6,20 @@ using System.Threading.Tasks;
 
 public partial class MsgHandler
 {
-    public static void MsgMove(ClientState c, MsgBase msgBase)
+    public static void MsgEnterBattle(ClientState c, MsgBase msgBase)
     {
-        MsgMove msgMove = (MsgMove)msgBase;
+        MsgEnterBattle msg = msgBase as MsgEnterBattle;
 
-        Console.WriteLine(msgMove.x);
+    }
 
-        msgMove.x++;
+    public static void MsgBattleResult(ClientState c, MsgBase msgBase)
+    {
+        MsgBattleResult msg = msgBase as MsgBattleResult;
 
-        NetManager.Send(c, msgMove);
+    }
+    public static void MsgLeaveBattle(ClientState c, MsgBase msgBase)
+    {
+        MsgLeaveBattle msg = msgBase as MsgLeaveBattle;
+
     }
 }

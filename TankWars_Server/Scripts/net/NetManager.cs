@@ -150,12 +150,26 @@ public class NetManager
         // package is not completed
         if (readBuff.length < bodyLength)
         {
+            Console.WriteLine("readBuff.readIdx -= 2");
             readBuff.readIdx -= 2;
             return;
         }
 
+        byte[] tempBytes = new byte[readBuff.length + 2];
+
+        Array.Copy(readBuff.bytes, readBuff.readIdx - 2, tempBytes, 0, readBuff.length + 2);
+
         int nameCount = 0;
         string protoName = MsgBase.DecodeName(readBuff.bytes, readBuff.readIdx, out nameCount);
+
+        Console.WriteLine($"****************************");
+        Console.WriteLine($"[ Debug ] client : {clientState.socket.RemoteEndPoint}");
+        Console.WriteLine($"[ Debug ] protoName : {protoName}");
+        Console.WriteLine($"[ Debug ] readIdx : {readBuff.readIdx} , buff length : {readBuff.length}");
+        Console.WriteLine($"[ Debug ] bodyLength : {bodyLength} ,nameCount : {nameCount}");
+        Console.WriteLine($"[ Debug ] bytes : {BitConverter.ToString(tempBytes).Replace("-", " ")}");
+       
+        Console.WriteLine($"****************************");
 
         if (string.IsNullOrEmpty(protoName))
         {
@@ -167,6 +181,7 @@ public class NetManager
         readBuff.readIdx += nameCount;
 
         int bodyCount = bodyLength - nameCount;
+
         MsgBase msgBase = MsgBase.Decode(protoName, readBuff.bytes, readBuff.readIdx, bodyCount);
 
         readBuff.readIdx += bodyCount;
@@ -175,7 +190,7 @@ public class NetManager
         MethodInfo mei = typeof(MsgHandler).GetMethod(protoName);
         object[] obs = { clientState, msgBase };
 
-        Console.WriteLine($"[ Server ] Receive {protoName}");
+        Console.WriteLine($"[ Server ] Receive <- Msg : {Newtonsoft.Json.JsonConvert.SerializeObject(msgBase)}");
 
         if (mei != null)
         {
@@ -208,6 +223,8 @@ public class NetManager
         {
             return;
         }
+
+        Console.WriteLine($"[ Debug ] Send -> Msg : {Newtonsoft.Json.JsonConvert.SerializeObject(msg)}");
 
         byte[] nameBytes = MsgBase.EncodeName(msg);
         byte[] bodyBytes = MsgBase.Encode(msg);

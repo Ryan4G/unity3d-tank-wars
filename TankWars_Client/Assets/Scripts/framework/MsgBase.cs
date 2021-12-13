@@ -11,8 +11,6 @@ public class MsgBase
     {
         string s = JsonUtility.ToJson(msgBase);
 
-        Debug.Log(s);
-
         return System.Text.Encoding.UTF8.GetBytes(s);
     }
 

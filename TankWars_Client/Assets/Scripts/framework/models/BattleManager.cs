@@ -61,16 +61,37 @@ public static class BattleManager
 
     private static void OnMsgLeaveBattle(MsgBase msgBase)
     {
-        throw new NotImplementedException();
+        MsgLeaveBattle msg = msgBase as MsgLeaveBattle;
+        BaseTank tank = GetTank(msg.id);
+
+        if (tank == null)
+        {
+            return;
+        }
+
+        RemoveTank(msg.id);
+
+        MonoBehaviour.Destroy(tank.gameObject);
     }
 
     private static void OnMsgBattleResult(MsgBase msgBase)
     {
-        throw new NotImplementedException();
+        MsgBattleResult msg = msgBase as MsgBattleResult;
+        bool isWin = false;
+
+        BaseTank tank = GetCtrlTank();
+
+        if (tank != null && tank.camp == msg.winCamp)
+        {
+            isWin = true;
+        }
+
+        PanelManager.Open<ResultPanel>(isWin);
     }
 
     private static void OnMsgEnterBattle(MsgBase msgBase)
     {
+        Debug.Log("OnMsgEnterBattle");
         MsgEnterBattle msg = msgBase as MsgEnterBattle;
         EnterBattle(msg);
     }
@@ -86,5 +107,46 @@ public static class BattleManager
         {
             GenerateTank(msg.tanks[i]);
         }
+    }
+
+    private static void GenerateTank(TankInfo tankInfo)
+    {
+        string objName = $"Tank_{tankInfo.id}";
+
+        GameObject tankObj = new GameObject(objName);
+        BaseTank tank = null;
+
+        if (tankInfo.id == GameMain.id)
+        {
+            tank = tankObj.AddComponent<CtrlTank>();
+
+            // camera follow player control tank
+            tankObj.AddComponent<CameraFollow>();
+        }
+        else
+        {
+            tank = tankObj.AddComponent<SyncTank>();
+        }
+
+        tank.camp = tankInfo.camp;
+        tank.id = tankInfo.id;
+        tank.hp = tankInfo.hp;
+
+        Vector3 pos = new Vector3(tankInfo.x, tankInfo.y, tankInfo.z);
+        Vector3 rot = new Vector3(tankInfo.ex, tankInfo.ey, tankInfo.ez);
+
+        tank.transform.position = pos;
+        tank.transform.eulerAngles = rot;
+
+        if (tankInfo.camp == 1)
+        {
+            tank.Init("tankPrefab");
+        }
+        else
+        {
+            tank.Init("tankPrefab2");
+        }
+
+        AddTank(tankInfo.id, tank);
     }
 }

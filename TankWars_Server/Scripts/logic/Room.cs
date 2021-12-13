@@ -22,6 +22,22 @@ public class Room
 
     public Status status = Status.PREPARE;
 
+    static float[,,] birthConfig = new float[2, 3, 6]
+    {
+        {
+            { -85.8f, 3.8f, -33.8f, 0f, 24.9f, 0f },
+            { -49.9f, 3.8f, -61.4f, 0f, 21.4f, 0f },
+            { -6.2f,  3.8f, -70.7f, 0f, 21.9f, 0f },
+        },
+        {
+            { 150f, 3.8f, -33.8f, 0f, -156.8f, 0f },
+            { -49.9f, 3.8f, -61.4f, 0f, -156.8f, 0f },
+            { -6.2f,  3.8f, -70.7f, 0f, -156.8f, 0f }
+        }
+    };
+
+    private long lastJudgeTime = 0;
+
     public bool AddPlayer(string id)
     {
         Player player = PlayerManager.GetPlayer(id);
@@ -83,7 +99,7 @@ public class Room
             playerInfo.lost = player.data.lost;
             playerInfo.isOwner = 0;
 
-            if (isOwner(player))
+            if (IsOwner(player))
             {
                 playerInfo.isOwner = 1;
             }
@@ -147,9 +163,17 @@ public class Room
         player.camp = 0;
         player.roomId = -1;
 
-        if (isOwner(player))
+        if (IsOwner(player))
         {
             ownerId = SwitchOwner();
+        }
+
+        if (status == Status.FIGHT)
+        {
+            player.data.lost++;
+            MsgLeaveBattle msg = new MsgLeaveBattle();
+            msg.id = player.id;
+            Broadcast(msg);
         }
 
         if (playerIds.Count == 0)
@@ -171,8 +195,199 @@ public class Room
         return "";
     }
 
-    private bool isOwner(Player player)
+    public bool IsOwner(Player player)
     {
         return player.id == ownerId;
+    }
+
+    private bool CanStartBattle()
+    {
+        if (status != Status.PREPARE)
+        {
+            return false;
+        }
+
+        int count1 = 0;
+        int count2 = 0;
+
+        foreach(string id in playerIds.Keys)
+        {
+            Player player = PlayerManager.GetPlayer(id);
+            if (player.camp == 1)
+            {
+                count1++;
+            }
+            else
+            {
+                count2++;
+            }
+        }
+
+        if (count1 < 1 || count2 < 1)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private void SetBirthPos(Player player, int index)
+    {
+        int camp = player.camp;
+
+        player.x = birthConfig[camp - 1, index, 0];
+        player.y = birthConfig[camp - 1, index, 1];
+        player.z = birthConfig[camp - 1, index, 2];
+        player.ex = birthConfig[camp - 1, index, 3];
+        player.ey = birthConfig[camp - 1, index, 4];
+        player.ez = birthConfig[camp - 1, index, 5];
+    }
+
+    private void ResetPlayers()
+    {
+        int count1 = 0;
+        int count2 = 0;
+
+        foreach(string id in playerIds.Keys)
+        {
+            Player player = PlayerManager.GetPlayer(id);
+            if (player.camp == 1)
+            {
+                SetBirthPos(player, count1++);
+            }
+            else
+            {
+                SetBirthPos(player, count2++);
+            }
+
+            player.hp = 100;
+        }
+    }
+
+    public TankInfo PlayerToTankInfo(Player player)
+    {
+        TankInfo tankInfo = new TankInfo();
+        tankInfo.camp = player.camp;
+        tankInfo.id = player.id;
+        tankInfo.hp = player.hp;
+
+        tankInfo.x = player.x;
+        tankInfo.y = player.y;
+        tankInfo.z = player.z;
+        tankInfo.ex = player.ex;
+        tankInfo.ey = player.ey;
+        tankInfo.ez = player.ez;
+
+        return tankInfo;
+    }
+
+    public bool StartBattle()
+    {
+        if (!CanStartBattle())
+        {
+            return false;
+        }
+
+        status = Status.FIGHT;
+
+        ResetPlayers();
+
+        MsgEnterBattle msg = new MsgEnterBattle();
+        msg.mapId = 1;
+        msg.tanks = new TankInfo[playerIds.Count];
+
+        int i = 0;
+
+        foreach(string id in playerIds.Keys)
+        {
+            Player player = PlayerManager.GetPlayer(id);
+            msg.tanks[i] = PlayerToTankInfo(player);
+            i++;
+        }
+
+        Broadcast(msg);
+        return true;
+    }
+
+    public bool IsDie(Player player)
+    {
+        return player.hp <= 0;
+    }
+
+    public int Judgement()
+    {
+        int count1 = 0;
+        int count2 = 0;
+
+        foreach(string id in playerIds.Keys)
+        {
+            Player player = PlayerManager.GetPlayer(id);
+
+            if (!IsDie(player))
+            {
+                if (player.camp == 1)
+                {
+                    count1++;
+                }
+
+                if (player.camp == 2)
+                {
+                    count2++;
+                }
+            }
+        }
+
+        if (count1 <= 0)
+        {
+            return 2;
+        }
+
+        if (count2 <= 0)
+        {
+            return 1;
+        }
+
+        return 0;
+    }
+
+    public void Update()
+    {
+        if (status != Status.FIGHT)
+        {
+            return;
+        }
+
+        if (NetManager.GetTimeStamp() - lastJudgeTime < 10)
+        {
+            return;
+        }
+
+        lastJudgeTime = NetManager.GetTimeStamp();
+
+        int winCamp = Judgement();
+
+        if (winCamp == 0)
+        {
+            return;
+        }
+
+        status = Status.PREPARE;
+
+        foreach(string id in playerIds.Keys)
+        {
+            Player player = PlayerManager.GetPlayer(id);
+            if (player.camp == winCamp)
+            {
+                player.data.win++;
+            }
+            else
+            {
+                player.data.lost++;
+            }
+        }
+
+        MsgBattleResult msg = new MsgBattleResult();
+        msg.winCamp = winCamp;
+        Broadcast(msg);
     }
 }

@@ -10,13 +10,15 @@ public class MsgBase
     {
         string s = JsonConvert.SerializeObject(msgBase);
 
-        Console.WriteLine($"[ Debug ] Send Body -> {s}");
-
         return System.Text.Encoding.UTF8.GetBytes(s);
     }
 
     public static MsgBase Decode(string protoName, byte[] bytes, int offset, int count)
     {
+        var tempBytes = new byte[count];
+        Array.Copy(bytes, offset, tempBytes, 0, count);
+
+        Console.WriteLine($"[ Debug ] Decode bytes: {BitConverter.ToString(tempBytes)}");
         string s = System.Text.Encoding.UTF8.GetString(bytes, offset, count);
 
         Console.WriteLine($"[ Debug ] Send Proto -> {s}");

@@ -111,6 +111,7 @@ public static class NetManager
     {
         if (msgListeners.ContainsKey(msgName))
         {
+            Debug.Log($"Receive Msg : {JsonUtility.ToJson(msgBase)}");
             msgListeners[msgName].Invoke(msgBase);
         }
     }
@@ -217,6 +218,12 @@ public static class NetManager
             Debug.Log("OnReceiveData MsgBase.DecodeName fail");
             return;
         }
+
+        //Debug.Log($"****************************");
+        //Debug.Log($"[ Debug ] protoName : {protoName}");
+        //Debug.Log($"[ Debug ] readIdx : {readBuff.readIdx} , buff length : {readBuff.length}");
+        //Debug.Log($"[ Debug ] bodyLength : {bodyLength} ,nameCount : {nameCount} , bytes : {BitConverter.ToString(new byte[] { readBuff.bytes[readBuff.readIdx - 2], readBuff.bytes[readBuff.readIdx - 1], readBuff.bytes[readBuff.readIdx], readBuff.bytes[readBuff.readIdx + 1] })}");
+        //Debug.Log($"****************************");
 
         readBuff.readIdx += nameCount;
 
@@ -328,6 +335,7 @@ public static class NetManager
 
         if (count == 1)
         {
+            Debug.Log($"{msg.protoName} : {BitConverter.ToString(sendBytes)}");
             socket.BeginSend(sendBytes, 0, sendBytes.Length, 0, SendCallback, socket);
         }
     }
@@ -368,6 +376,7 @@ public static class NetManager
             // if ba.length != 0 or queue is not empty
             if (ba != null)
             {
+                Debug.Log($"{BitConverter.ToString(ba.bytes)}");
                 socket.BeginSend(ba.bytes, ba.readIdx, ba.length, 0, SendCallback, socket);
             }
             else if (isClosing)
