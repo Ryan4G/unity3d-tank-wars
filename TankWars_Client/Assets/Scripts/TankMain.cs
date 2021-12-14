@@ -13,8 +13,8 @@ public class TankMain : MonoBehaviour
         //NetManager.AddEventListener(NetManager.NetEvent.Close, OnConnectClose);
         //NetManager.AddMsgListener("MsgMove", OnMsgMove);
 
-        PanelManager.Init();
-        PanelManager.Open<LoginPanel>();
+        //PanelManager.Init();
+        //PanelManager.Open<LoginPanel>();
         //PanelManager.Open<TipPanel>("用户名或密码错误！");
 
         //GameObject tankObj = new GameObject("myTank");

@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class CtrlTank : BaseTank
 {
+    private float lastSendSyncTime = 0;
+
+    public static float syncInterval = 0.1f;
+
     // Update is called once per frame
     new void Update()
     {
@@ -15,6 +19,8 @@ public class CtrlTank : BaseTank
         TurretUpdate();
 
         FireUpdate();
+
+        SyncUpdate();
     }
 
     private void TurretUpdate()
@@ -73,6 +79,37 @@ public class CtrlTank : BaseTank
             return;
         }
 
-        Fire();
+        Bullet bullet = Fire();
+
+        MsgFire msg = new MsgFire();
+        msg.x = bullet.transform.position.x;
+        msg.y = bullet.transform.position.y;
+        msg.z = bullet.transform.position.z;
+        msg.ex = bullet.transform.eulerAngles.x;
+        msg.ey = bullet.transform.eulerAngles.y;
+        msg.ez = bullet.transform.eulerAngles.z;
+
+        NetManager.Send(msg);
+    }
+
+    private void SyncUpdate()
+    {
+        if (Time.time - lastSendSyncTime < syncInterval)
+        {
+            return;
+        }
+
+        lastSendSyncTime = Time.time;
+
+        MsgSyncTank msg = new MsgSyncTank();
+        msg.x = transform.position.x;
+        msg.y = transform.position.y;
+        msg.z = transform.position.z;
+        msg.ex = transform.eulerAngles.x;
+        msg.ey = transform.eulerAngles.y;
+        msg.ez = transform.eulerAngles.z;
+        msg.turretY = turret.localEulerAngles.y;
+
+        NetManager.Send(msg);
     }
 }

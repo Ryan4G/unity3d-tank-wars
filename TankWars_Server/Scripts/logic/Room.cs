@@ -25,14 +25,14 @@ public class Room
     static float[,,] birthConfig = new float[2, 3, 6]
     {
         {
-            { -85.8f, 3.8f, -33.8f, 0f, 24.9f, 0f },
-            { -49.9f, 3.8f, -61.4f, 0f, 21.4f, 0f },
-            { -6.2f,  3.8f, -70.7f, 0f, 21.9f, 0f },
+            {-116.9579f,2.946688f,-119.4997f,9.798f,30.359f,5.251f},
+            {-72.46989f,9.201271f,-148.4671f,5.274f,32.863f,-1.176f},
+            {-162.9382f,7.024947f,-86.57582f,22.663f,30.442f,6.259f},
         },
         {
-            { 150f, 3.8f, -33.8f, 0f, -156.8f, 0f },
-            { -49.9f, 3.8f, -61.4f, 0f, -156.8f, 0f },
-            { -6.2f,  3.8f, -70.7f, 0f, -156.8f, 0f }
+            {154.3005f,0.4999985f,176.0996f,0f,-141.157f,0f},
+            {134.0006f,0.4999991f,211.5995f,0f,-141.142f,0f},
+            {69.80022f,0.4999996f,222.0003f,0f,-141.137f,0f},
         }
     };
 
@@ -111,7 +111,7 @@ public class Room
         return msg;
     }
 
-    private void Broadcast(MsgBase msg)
+    public void Broadcast(MsgBase msg)
     {
         foreach(string id in playerIds.Keys)
         {

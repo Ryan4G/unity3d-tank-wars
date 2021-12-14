@@ -50,10 +50,13 @@ public class Bullet : MonoBehaviour
         
         if (hitTank)
         {
-            var distance = Vector3.Distance(transform.position, hitTank.transform.position);
-            var damage = 35f * Mathf.Clamp(50f / distance, 1f, 3f);
+            SendMsgHit(tank, hitTank);
 
-            hitTank.Attacked(damage);
+            //// near more damage
+            //var distance = Vector3.Distance(transform.position, hitTank.transform.position);
+            //var damage = 35f * Mathf.Clamp(50f / distance, 1f, 3f);
+
+            //hitTank.Attacked(damage);
         }
 
         GameObject exploreEffect = ResManager.LoadPrefab(@"Effects/Fire & Explosion Effects/Prefabs/TinyExplosion");
@@ -64,4 +67,25 @@ public class Bullet : MonoBehaviour
         Destroy(gameObject);
     }
 
+    private void SendMsgHit(BaseTank tank, BaseTank hitTank)
+    {
+        if (tank == null || hitTank == null)
+        {
+            return;
+        }
+
+        if (tank.id != GameMain.id)
+        {
+            return;
+        }
+
+        MsgHit msg = new MsgHit();
+        msg.targetId = hitTank.id;
+        msg.id = tank.id;
+        msg.x = transform.position.x;
+        msg.y = transform.position.y;
+        msg.z = transform.position.z;
+
+        NetManager.Send(msg);
+    }
 }

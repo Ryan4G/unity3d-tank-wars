@@ -21,7 +21,7 @@ public class MsgBase
         Console.WriteLine($"[ Debug ] Decode bytes: {BitConverter.ToString(tempBytes)}");
         string s = System.Text.Encoding.UTF8.GetString(bytes, offset, count);
 
-        Console.WriteLine($"[ Debug ] Send Proto -> {s}");
+        Console.WriteLine($"[ Debug ] Receive Proto -> {s}");
 
         MsgBase msgBase = (MsgBase)JsonConvert.DeserializeObject(s, Type.GetType(protoName));
 

@@ -162,14 +162,14 @@ public class NetManager
         int nameCount = 0;
         string protoName = MsgBase.DecodeName(readBuff.bytes, readBuff.readIdx, out nameCount);
 
-        Console.WriteLine($"****************************");
-        Console.WriteLine($"[ Debug ] client : {clientState.socket.RemoteEndPoint}");
-        Console.WriteLine($"[ Debug ] protoName : {protoName}");
-        Console.WriteLine($"[ Debug ] readIdx : {readBuff.readIdx} , buff length : {readBuff.length}");
-        Console.WriteLine($"[ Debug ] bodyLength : {bodyLength} ,nameCount : {nameCount}");
-        Console.WriteLine($"[ Debug ] bytes : {BitConverter.ToString(tempBytes).Replace("-", " ")}");
+        //Console.WriteLine($"****************************");
+        //Console.WriteLine($"[ Debug ] client : {clientState.socket.RemoteEndPoint}");
+        //Console.WriteLine($"[ Debug ] protoName : {protoName}");
+        //Console.WriteLine($"[ Debug ] readIdx : {readBuff.readIdx} , buff length : {readBuff.length}");
+        //Console.WriteLine($"[ Debug ] bodyLength : {bodyLength} ,nameCount : {nameCount}");
+        //Console.WriteLine($"[ Debug ] bytes : {BitConverter.ToString(tempBytes).Replace("-", " ")}");
        
-        Console.WriteLine($"****************************");
+        //Console.WriteLine($"****************************");
 
         if (string.IsNullOrEmpty(protoName))
         {

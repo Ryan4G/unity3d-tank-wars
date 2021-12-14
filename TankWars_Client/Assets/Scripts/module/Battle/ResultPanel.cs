@@ -17,7 +17,7 @@ public class ResultPanel : BasePanel
     {
         winImage = skin.transform.Find("WinImage").GetComponent<Image>();
         lostImage = skin.transform.Find("LostImage").GetComponent<Image>();
-        okButton = skin.transform.Find("OkButton").GetComponent<Button>();
+        okButton = skin.transform.Find("OkBtn").GetComponent<Button>();
 
         okButton.onClick.AddListener(OnOkClick);
 

@@ -12,6 +12,67 @@ public static class BattleManager
         NetManager.AddMsgListener("MsgEnterBattle", OnMsgEnterBattle);
         NetManager.AddMsgListener("MsgBattleResult", OnMsgBattleResult);
         NetManager.AddMsgListener("MsgLeaveBattle", OnMsgLeaveBattle);
+
+        NetManager.AddMsgListener("MsgSyncTank", OnMsgSyncTank);
+        NetManager.AddMsgListener("MsgFire", OnMsgFire);
+        NetManager.AddMsgListener("MsgHit", OnMsgHit);
+    }
+
+    private static void OnMsgHit(MsgBase msgBase)
+    {
+        MsgHit msg = msgBase as MsgHit;
+
+        // self position
+        if (msg.id == GameMain.id)
+        {
+            return;
+        }
+
+        BaseTank tank = GetTank(msg.id);
+        if (tank == null)
+        {
+            return;
+        }
+
+        tank.Attacked(msg.damage);
+    }
+
+    private static void OnMsgFire(MsgBase msgBase)
+    {
+        MsgFire msg = msgBase as MsgFire;
+
+        // self position
+        if (msg.id == GameMain.id)
+        {
+            return;
+        }
+
+        SyncTank tank = GetTank(msg.id) as SyncTank;
+        if (tank == null)
+        {
+            return;
+        }
+
+        tank.SyncFire(msg);
+    }
+
+    private static void OnMsgSyncTank(MsgBase msgBase)
+    {
+        MsgSyncTank msg = msgBase as MsgSyncTank;
+
+        // self position
+        if (msg.id == GameMain.id)
+        {
+            return;
+        }
+
+        SyncTank tank = GetTank(msg.id) as SyncTank;
+        if (tank == null)
+        {
+            return;
+        }
+
+        tank.SyncPos(msg);
     }
 
     public static void AddTank(string id, BaseTank tank)
