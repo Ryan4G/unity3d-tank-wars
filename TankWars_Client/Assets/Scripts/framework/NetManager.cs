@@ -111,7 +111,7 @@ public static class NetManager
     {
         if (msgListeners.ContainsKey(msgName))
         {
-            Debug.Log($"Receive Msg : {JsonUtility.ToJson(msgBase)}");
+            //Debug.Log($"Receive Msg : {JsonUtility.ToJson(msgBase)}");
             msgListeners[msgName].Invoke(msgBase);
         }
     }
@@ -206,7 +206,13 @@ public static class NetManager
         // package is not completed
         if (readBuff.length < bodyLength)
         {
-            readBuff.readIdx -= 2;
+            if (readBuff.readIdx >= 2)
+            {
+                Console.WriteLine("readBuff.readIdx -= 2");
+
+                readBuff.readIdx -= 2;
+            }
+
             return;
         }
 
@@ -233,12 +239,15 @@ public static class NetManager
         readBuff.readIdx += bodyCount;
         readBuff.CheckAndMoveBytes();
 
-        lock (msgList)
+        if (msgBase != null)
         {
-            msgList.Add(msgBase);
-        }
+            lock (msgList)
+            {
+                msgList.Add(msgBase);
+            }
 
-        msgCount++;
+            msgCount++;
+        }
 
         if (readBuff.length > 2)
         {
@@ -335,7 +344,7 @@ public static class NetManager
 
         if (count == 1)
         {
-            Debug.Log($"{msg.protoName} : {BitConverter.ToString(sendBytes)}");
+            Debug.Log($"{msg.protoName} : {BitConverter.ToString(sendBytes).Replace("-", " ")}");
             socket.BeginSend(sendBytes, 0, sendBytes.Length, 0, SendCallback, socket);
         }
     }
@@ -376,7 +385,9 @@ public static class NetManager
             // if ba.length != 0 or queue is not empty
             if (ba != null)
             {
-                Debug.Log($"{BitConverter.ToString(ba.bytes)}");
+                var protoName = MsgBase.DecodeName(ba.bytes, ba.readIdx, out _);
+
+                Debug.Log($"{protoName} : {BitConverter.ToString(ba.bytes).Replace("-", " ")}");
                 socket.BeginSend(ba.bytes, ba.readIdx, ba.length, 0, SendCallback, socket);
             }
             else if (isClosing)

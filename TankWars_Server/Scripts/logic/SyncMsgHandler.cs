@@ -45,6 +45,22 @@ public partial class MsgHandler
     public static void MsgFire(ClientState c, MsgBase msgBase)
     {
         MsgFire msg = msgBase as MsgFire;
+        Player player = c.player;
+
+        if (player == null)
+        {
+            return;
+        }
+
+        Room room = RoomManager.GetRoom(player.roomId);
+        if (room == null || room.status != Room.Status.FIGHT)
+        {
+            return;
+        }
+
+        msg.id = player.id;
+
+        room.Broadcast(msg);
 
     }
     public static void MsgHit(ClientState c, MsgBase msgBase)

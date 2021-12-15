@@ -10,7 +10,7 @@ public class Bullet : MonoBehaviour
 
     private GameObject skin;
 
-    Rigidbody rigidbody;
+    Rigidbody _rigidbody;
 
     public void Init()
     {
@@ -20,8 +20,8 @@ public class Bullet : MonoBehaviour
         skin.transform.localPosition = Vector3.zero;
         skin.transform.localEulerAngles = Vector3.zero;
 
-        rigidbody = gameObject.AddComponent<Rigidbody>();
-        rigidbody.useGravity = false;
+        _rigidbody = gameObject.AddComponent<Rigidbody>();
+        _rigidbody.useGravity = false;
     }
 
     // Start is called before the first frame update

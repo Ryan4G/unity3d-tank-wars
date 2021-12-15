@@ -15,15 +15,21 @@ public class MsgBase
 
     public static MsgBase Decode(string protoName, byte[] bytes, int offset, int count)
     {
-        var tempBytes = new byte[count];
-        Array.Copy(bytes, offset, tempBytes, 0, count);
+        MsgBase msgBase = null;
 
-        Console.WriteLine($"[ Debug ] Decode bytes: {BitConverter.ToString(tempBytes)}");
-        string s = System.Text.Encoding.UTF8.GetString(bytes, offset, count);
+        try
+        {
+            string s = System.Text.Encoding.UTF8.GetString(bytes, offset, count);
 
-        Console.WriteLine($"[ Debug ] Receive Proto -> {s}");
+            Console.WriteLine($"[ Debug ] Receive Proto -> {s}");
 
-        MsgBase msgBase = (MsgBase)JsonConvert.DeserializeObject(s, Type.GetType(protoName));
+            msgBase = (MsgBase)JsonConvert.DeserializeObject(s, Type.GetType(protoName));
+
+        }
+        catch (JsonException ex)
+        {
+            Console.WriteLine($"[ Server ] Decode fail : {ex}");
+        }
 
         return msgBase;
     }

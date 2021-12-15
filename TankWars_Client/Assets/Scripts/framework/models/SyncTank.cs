@@ -64,7 +64,7 @@ public class SyncTank : BaseTank
         Vector3 rot = new Vector3(msg.ex, msg.ey, msg.ez);
 
         forecastPos = pos + 2 * (lastPos - pos);
-        forecastRot = pos + 2 * (lastRot - rot);
+        forecastRot = rot + 2 * (lastRot - rot);
 
         lastPos = pos;
         lastRot = rot;

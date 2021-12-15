@@ -125,9 +125,9 @@ public class ByteArray
             return 0;
         }
 
-        short ret = (short)((bytes[1] << 8) | bytes[0]);
+        short ret = (short)((bytes[readIdx + 1] << 8) | bytes[readIdx]);
 
-        Console.WriteLine($"ReadInt16 -> {bytes[0]:X2} {bytes[1]:X2}");
+        //Console.WriteLine($"ReadInt16 -> {bytes[readIdx]:X2} {bytes[readIdx + 1]:X2} , {ret}");
 
         readIdx += 2;
 
@@ -143,10 +143,10 @@ public class ByteArray
         }
 
         int ret = (int)(
-            (bytes[3] << 24) |
-            (bytes[2] << 16) |
-            (bytes[1] << 8) |
-            bytes[0]
+            (bytes[readIdx + 3] << 24) |
+            (bytes[readIdx + 2] << 16) |
+            (bytes[readIdx + 1] << 8) |
+            bytes[readIdx]
             );
 
         readIdx += 4;

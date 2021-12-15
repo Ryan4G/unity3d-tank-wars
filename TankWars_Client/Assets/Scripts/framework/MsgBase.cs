@@ -16,8 +16,16 @@ public class MsgBase
 
     public static MsgBase Decode(string protoName, byte[] bytes, int offset, int count)
     {
-        string s = System.Text.Encoding.UTF8.GetString(bytes, offset, count);
-        MsgBase msgBase = JsonUtility.FromJson(s, Type.GetType(protoName)) as MsgBase;
+        MsgBase msgBase = null;
+        try
+        {
+            string s = System.Text.Encoding.UTF8.GetString(bytes, offset, count);
+            msgBase = JsonUtility.FromJson(s, Type.GetType(protoName)) as MsgBase;
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine($"[ Server ] Decode fail : {ex}");
+        }
 
         return msgBase;
     }

@@ -9,7 +9,7 @@ public class BaseTank : MonoBehaviour
 
     public float steer = 20;
 
-    public float speed = 3f;
+    public float speed = 10f;
 
     public float turretSpeed = 30f;
 

@@ -56,6 +56,8 @@ public class NetManager
             }
 
             Timer();
+
+            System.Threading.Thread.Sleep(10);
         }
     }
 
@@ -103,6 +105,8 @@ public class NetManager
         try
         {
             count = s.Receive(readBuff.bytes, readBuff.writeIdx, readBuff.remain, SocketFlags.None);
+
+            //Console.WriteLine($"[ Debug ] count : {count} ");
         }
         catch (SocketException ex)
         {
@@ -145,31 +149,25 @@ public class NetManager
             return;
         }
 
+       // Console.WriteLine($"readIdx = {readBuff.readIdx}, writeIdx = {readBuff.writeIdx}");
+
         short bodyLength = readBuff.ReadInt16();
 
         // package is not completed
         if (readBuff.length < bodyLength)
         {
-            Console.WriteLine("readBuff.readIdx -= 2");
-            readBuff.readIdx -= 2;
+            if (readBuff.readIdx >= 2)
+            {
+                //Console.WriteLine($"readBuff.readIdx -= 2,  readIdx = {readBuff.readIdx}, writeIdx = {readBuff.writeIdx}");
+
+                readBuff.readIdx -= 2;
+            }
+
             return;
         }
 
-        byte[] tempBytes = new byte[readBuff.length + 2];
-
-        Array.Copy(readBuff.bytes, readBuff.readIdx - 2, tempBytes, 0, readBuff.length + 2);
-
         int nameCount = 0;
         string protoName = MsgBase.DecodeName(readBuff.bytes, readBuff.readIdx, out nameCount);
-
-        //Console.WriteLine($"****************************");
-        //Console.WriteLine($"[ Debug ] client : {clientState.socket.RemoteEndPoint}");
-        //Console.WriteLine($"[ Debug ] protoName : {protoName}");
-        //Console.WriteLine($"[ Debug ] readIdx : {readBuff.readIdx} , buff length : {readBuff.length}");
-        //Console.WriteLine($"[ Debug ] bodyLength : {bodyLength} ,nameCount : {nameCount}");
-        //Console.WriteLine($"[ Debug ] bytes : {BitConverter.ToString(tempBytes).Replace("-", " ")}");
-       
-        //Console.WriteLine($"****************************");
 
         if (string.IsNullOrEmpty(protoName))
         {
@@ -177,6 +175,16 @@ public class NetManager
             Close(clientState);
             return;
         }
+
+        byte[] tempBytes = new byte[bodyLength + 2];
+
+        Array.Copy(readBuff.bytes, readBuff.readIdx - 2, tempBytes, 0, bodyLength + 2);
+
+        //Console.WriteLine($"****************************");
+        //Console.WriteLine($"[ Debug ] protoName : {protoName}");
+        //Console.WriteLine($"[ Debug ] bytes : {BitConverter.ToString(tempBytes).Replace("-", " ")}");
+
+        //Console.WriteLine($"****************************");
 
         readBuff.readIdx += nameCount;
 
@@ -187,18 +195,19 @@ public class NetManager
         readBuff.readIdx += bodyCount;
         readBuff.CheckAndMoveBytes();
 
-        MethodInfo mei = typeof(MsgHandler).GetMethod(protoName);
-        object[] obs = { clientState, msgBase };
-
-        Console.WriteLine($"[ Server ] Receive <- Msg : {Newtonsoft.Json.JsonConvert.SerializeObject(msgBase)}");
-
-        if (mei != null)
+        if (msgBase != null)
         {
-            mei.Invoke(null, obs);
-        }
-        else
-        {
-            Console.WriteLine($"[ Server ] OnReceiveData Invoke fail {protoName}");
+            MethodInfo mei = typeof(MsgHandler).GetMethod(protoName);
+            object[] obs = { clientState, msgBase };
+
+            if (mei != null)
+            {
+                mei.Invoke(null, obs);
+            }
+            else
+            {
+                Console.WriteLine($"[ Server ] OnReceiveData Invoke fail {protoName}");
+            }
         }
 
         if (readBuff.length > 2)
@@ -224,7 +233,7 @@ public class NetManager
             return;
         }
 
-        Console.WriteLine($"[ Debug ] Send -> Msg : {Newtonsoft.Json.JsonConvert.SerializeObject(msg)}");
+        //Console.WriteLine($"[ Debug ] Send -> Msg : {Newtonsoft.Json.JsonConvert.SerializeObject(msg)}");
 
         byte[] nameBytes = MsgBase.EncodeName(msg);
         byte[] bodyBytes = MsgBase.Encode(msg);
