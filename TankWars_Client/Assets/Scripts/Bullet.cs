@@ -48,7 +48,7 @@ public class Bullet : MonoBehaviour
             return;
         }
         
-        if (hitTank)
+        if (hitTank != null)
         {
             SendMsgHit(tank, hitTank);
 

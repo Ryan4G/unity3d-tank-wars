@@ -49,6 +49,14 @@ public static class NetManager
 
     static float lastPongTime = 0;
 
+    public static bool SocketConnected
+    {
+        get
+        {
+            return socket != null && socket.Connected;
+        }
+    }
+
     public static void AddEventListener(NetEvent netEvent, EventListener listener)
     {
         if (eventListeners.ContainsKey(netEvent))
@@ -366,7 +374,7 @@ public static class NetManager
 
             lock (writeQueue)
             {
-                ba = writeQueue.First();
+                ba = writeQueue.FirstOrDefault();
             }
 
             ba.readIdx += count;
@@ -378,7 +386,7 @@ public static class NetManager
                 {
                     writeQueue.Dequeue();
 
-                    ba = writeQueue.First();
+                    ba = writeQueue.FirstOrDefault();
                 }
             }
 

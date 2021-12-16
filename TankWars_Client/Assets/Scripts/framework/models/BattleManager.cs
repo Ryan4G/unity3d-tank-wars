@@ -23,12 +23,12 @@ public static class BattleManager
         MsgHit msg = msgBase as MsgHit;
 
         // self position
-        if (msg.id == GameMain.id)
-        {
-            return;
-        }
+        //if (msg.id == GameMain.id)
+        //{
+        //    return;
+        //}
 
-        BaseTank tank = GetTank(msg.id);
+        BaseTank tank = GetTank(msg.targetId);
         if (tank == null)
         {
             return;

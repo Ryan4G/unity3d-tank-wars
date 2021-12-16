@@ -29,10 +29,7 @@ public class LoginPanel : BasePanel
 
         NetManager.AddMsgListener("MsgLogin", OnMsgLogin);
 
-        NetManager.AddEventListener(NetManager.NetEvent.ConnectSucc, OnConnectSucc);
-        NetManager.AddEventListener(NetManager.NetEvent.ConnectFail, OnConnectFail);
-
-        NetManager.Connect("127.0.0.1", 8888);
+        PanelManager.Open<SettingPanel>();
     }
 
     private void OnRegisterClick()
@@ -57,16 +54,6 @@ public class LoginPanel : BasePanel
     public override void OnClose()
     {
         NetManager.RemoveMsgListener("MsgLogin", OnMsgLogin);
-    }
-
-    private void OnConnectFail(string err)
-    {
-        PanelManager.Open<TipPanel>(err);
-    }
-
-    private void OnConnectSucc(string err)
-    {
-        Debug.Log("连接服务器成功...");
     }
 
     private void OnMsgLogin(MsgBase msgBase)
